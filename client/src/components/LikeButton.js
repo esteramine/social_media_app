@@ -3,6 +3,7 @@ import { Link } from 'react'; //for not login situation, then has to go back to 
 import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
 import {Button, Icon, Label} from 'semantic-ui-react';
+import CustomPopup from '../util/CustomPopup';
 
 function LikeButton({user, post: {id, likes, likeCount}}){
     const [liked, setLiked] = useState(false);
@@ -23,25 +24,30 @@ function LikeButton({user, post: {id, likes, likeCount}}){
 
     const likeButton = user? (
         liked?(
-            <Button color='teal'>
-                <Icon name='heart' />
-            </Button>
+            <Icon name='heart' color='red' size='big' style={{marginLeft: 0}}/>
+
         ):(
-            <Button color='teal' basic>
-                <Icon name='heart' />
-            </Button>
+            <Icon name='heart outline' color='black' size='big' style={{marginLeft: 0}}/>
         )
     ):(
-        <Button as={Link} to="/login" color='teal' basic>
-            <Icon name='heart' />
-        </Button>
+        <Icon name='heart outline' color='black' size='big' style={{marginLeft: 0}}/>
     );
     
     return(
-        <Button as='div' labelPosition='right' onClick={likePost}>
-            {likeButton}
-            <Label basic color='teal' pointing='left'>{likeCount}</Label>
-        </Button>
+        user? (
+            <Button as='div' labelPosition='right' onClick={likePost}>
+                <CustomPopup content={liked? 'unlike post': 'like post'}>
+                {likeButton} 
+                </CustomPopup>
+            </Button>
+        ):(
+            <Button labelPosition='right' as='a' href='/login'>
+                <CustomPopup content={liked? 'unlike post': 'like post'}>
+                {likeButton} 
+                </CustomPopup>
+            </Button>
+        )
+        
     );
 }
 
@@ -59,3 +65,11 @@ const LIKE_POST_MUTATION = gql`
 `
 
 export default LikeButton;
+
+
+/*<Button as='div' labelPosition='right' onClick={likePost}>
+<CustomPopup content={liked? 'unlike post': 'like post'}>
+{likeButton} 
+</CustomPopup>
+<Label basic color='teal' pointing='left'>{likeCount}</Label>
+</Button>*/
